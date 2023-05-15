@@ -6,6 +6,7 @@ require("dotenv").config();
 const MNEMONIC = process.env.MNEMONIC;
 const PASS_PHRASE = process.env.PASS_PHRASE;
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL;
+const ETHERSCAN_API = process.env.ETHERSCAN_API;
 
 const lazyImport = async (module) => {
   return await require(module);
@@ -48,7 +49,7 @@ module.exports = {
     },
   },
   etherscan: {
-    apiKey: "CHIRAADNUI814XIT9ST36R63UFNBNDKBDY",
+    apiKey: ETHERSCAN_API,
   },
   solidity: "0.8.18",
 };
