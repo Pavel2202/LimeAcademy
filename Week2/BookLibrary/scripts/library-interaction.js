@@ -1,8 +1,8 @@
 const { ethers } = require("hardhat");
 const { abi } = require("../artifacts/contracts/Library.sol/Library.json");
 
-const libraryAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-let deployer, library;
+const libraryAddress = "0x76d4771ABb5FbbCF2cfD34468fC1aF586953300c";
+let library;
 
 async function addBook(title, author, copies) {
   const tx = await library.addBook(title, author, copies);
@@ -31,8 +31,13 @@ async function returnBook() {
 }
 
 async function main() {
-  deployer = (await ethers.getSigners())[0];
-  library = new ethers.Contract(libraryAddress, abi, deployer);
+  const provider = new ethers.providers.JsonRpcProvider(
+    process.env.SEPOLIA_RPC_URL
+  );
+  const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+
+  const libraryFactory = await ethers.getContractFactory("Library", wallet);
+  library = await libraryFactory.attach(libraryAddress);
 
   await addBook("1984", "George Orwell", 5);
   await increaseCopies(5);
