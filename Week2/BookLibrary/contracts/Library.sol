@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.18;
 
-import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 error InvalidId();
 error InsufficientCopies();

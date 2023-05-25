@@ -1,7 +1,7 @@
 const { ethers } = require("hardhat");
 const { abi } = require("../artifacts/contracts/Library.sol/Library.json");
 
-const libraryAddress = "0x76d4771ABb5FbbCF2cfD34468fC1aF586953300c";
+const libraryAddress = "0x8E034628164ACedDA8B461Ce2711f6f61C53b256";
 let library;
 
 async function addBook(title, author, copies) {
