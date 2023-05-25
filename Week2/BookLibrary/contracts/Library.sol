@@ -10,7 +10,7 @@ error BookAlreadyBorrowed();
 error BookNotBorrowed();
 
 contract Library is Ownable {
-    Book[] public books;
+    Book[] private books;
     mapping(uint256 => address[]) public usersByBook;
     mapping(address => mapping(uint256 => bool)) public borrowedBooks;
 
@@ -21,10 +21,23 @@ contract Library is Ownable {
         uint256 copies;
     }
 
-    event BookAdded(uint256 indexed id, string title, string author, uint256 copies);
+    event BookAdded(
+        uint256 indexed id,
+        string title,
+        string author,
+        uint256 copies
+    );
     event CopiesIncreased(uint256 indexed id, uint256 copies);
-    event BookBorrowed(uint256 indexed id, address indexed borrower, string title);
-    event BookReturned(uint256 indexed id, address indexed returned, string title);
+    event BookBorrowed(
+        uint256 indexed id,
+        address indexed borrower,
+        string title
+    );
+    event BookReturned(
+        uint256 indexed id,
+        address indexed returned,
+        string title
+    );
 
     modifier validateId(uint256 _id) {
         if (_id >= books.length) {
@@ -47,19 +60,28 @@ contract Library is Ownable {
         _;
     }
 
-    function addBook(string memory title, string memory author, uint256 copies) external onlyOwner {
+    function addBook(
+        string memory title,
+        string memory author,
+        uint256 copies
+    ) external onlyOwner {
         uint256 id = books.length;
         books.push(Book(id, title, author, copies));
         emit BookAdded(id, title, author, copies);
     }
 
-    function increaseCopies(uint256 _id, uint256 newCopies) external onlyOwner validateId(_id) {
+    function increaseCopies(
+        uint256 _id,
+        uint256 newCopies
+    ) external onlyOwner validateId(_id) {
         Book storage book = books[_id];
         book.copies += newCopies;
         emit CopiesIncreased(_id, book.copies);
     }
 
-    function borrowBook(uint256 _id) external validateId(_id) checkIfBookIsBorrowed(_id) {
+    function borrowBook(
+        uint256 _id
+    ) external validateId(_id) checkIfBookIsBorrowed(_id) {
         Book storage book = books[_id];
 
         if (book.copies == 0) {
@@ -67,15 +89,25 @@ contract Library is Ownable {
         }
 
         book.copies--;
-        borrowedBooks[msg.sender][book.id] = true; 
+        borrowedBooks[msg.sender][book.id] = true;
         usersByBook[book.id].push(msg.sender);
         emit BookBorrowed(_id, msg.sender, book.title);
     }
 
-    function returnBook(uint256 _id) external validateId(_id) checkIfUserBorrowedBook(_id) {
+    function returnBook(
+        uint256 _id
+    ) external validateId(_id) checkIfUserBorrowedBook(_id) {
         Book storage book = books[_id];
         book.copies++;
-        borrowedBooks[msg.sender][book.id] = false; 
+        borrowedBooks[msg.sender][book.id] = false;
         emit BookReturned(_id, msg.sender, book.title);
+    }
+
+    function getBook(uint256 _id) external view validateId(_id) returns (Book memory) {
+        return books[_id];
+    }
+
+    function getBooksCount() external view returns (uint256) {
+        return books.length;
     }
 }
